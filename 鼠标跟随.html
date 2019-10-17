@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            height: 5000px;
+        }
+
+        img {
+            position: absolute;
+            padding: 10px 0;
+            border: 1px solid #cccccc;
+            cursor: pointer;
+            background-color: yellowgreen;
+        }
+    </style>
+</head>
+
+<body>
+    <img src="./01.jpg" width="100" height="100" alt="风景图">
+    <script>
+        // 原理：鼠标在页面的位置 = 被卷曲的部分 + 可视区域部分
+        var img = document.getElementsByTagName('img')[0];
+        var timer = null;
+        var targetx = 0;
+        var targety = 0;
+        var leaderx = 0;
+        var leadery = 0;
+        //给整个文档绑定点击事件获取鼠标位置
+        document.onclick = function (event) {
+            event = event || window.event;
+            //鼠标在页面的位置 = 被卷去的部分+可视区域部分。
+            var pagey = event.pageY || scroll().top + event.clientY;
+            var pagex = event.pageX || scroll().left + event.clientX;
+
+            targety = pagey - 30;
+            targetx = pagex - 50;
+
+            //使用前要用定时器，先清理定时器
+            clearInterval(timer);
+
+            timer = setInterval(() => {
+                //为盒子获取自身宽度;
+                leaderx = img.offsetLeft;
+                //获取步长
+                var stepx = (targetx - leaderx) / 10;
+                stepx = stepx > 0 ? Math.ceil(stepx) : Math.floor(stepx);
+                leaderx = leaderx + stepx;
+                //赋值
+                img.style.left = leaderx + "px";
+
+                //为获取盒子的高度
+                leadery = img.offsetTop;
+                var stepy = (targety - leadery) / 10;
+                stepy = stepy > 0 ? Math.ceil(stepy) : Math.floor(stepy);
+                leadery = leadery + stepy;
+                //赋值
+                img.style.top = leadery + "px";
+                //清定时器
+                if (Math.abs(targety - img.offsetHeight) <= Math.abs(stepy) && Math.abs(targetx - img.offsetLeft) <= Math.abs(stepx)) {
+                    img.style.top = targety + "px";
+                    img.style.left = targetx + "px";
+                    clearInterval(timer);
+
+
+                }
+
+
+
+
+
+            }, 30);
+
+
+        }
+
+
+
+    </script>
+</body>
+
+
+</html>
